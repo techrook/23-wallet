@@ -8,7 +8,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { Match } from 'src/utils/decorators/validators';
+import { Match } from '../utils/decorators/validators';
 class Email {
   @IsEmail({}, { message: 'Please provide a valid email' })
   readonly email: string;

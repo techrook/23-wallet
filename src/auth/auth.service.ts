@@ -1,6 +1,6 @@
 import { ForbiddenException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto, LoginUserDto } from './auth.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service'; 
 import * as argon from 'argon2';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -16,7 +16,7 @@ export class AuthService {
         try {
             const hash = await argon.hash(dto.password);
             if (dto.password != dto.passwordConfirm){
-                throw new HttpException(
+                return new HttpException(
                     'user must confim  password',
                     HttpStatus.BAD_REQUEST,
                   );
@@ -33,7 +33,11 @@ export class AuthService {
             delete user.password;
             return user
         } catch (error) {
-            throw new Error(error.message);
+          console.log(error)
+            throw new HttpException(
+                'Error creating user', 
+                HttpStatus.INTERNAL_SERVER_ERROR, 
+              );
         }
     }
     async login (dto:LoginUserDto){
@@ -47,7 +51,10 @@ export class AuthService {
               if (!passwordMatches) throw new ForbiddenException('Credentials incorrect');
               return this.signToken(user.id, user.email);
         } catch (error) {
-            throw new Error(error.message);
+            throw new HttpException(
+                'Error login user', 
+                HttpStatus.INTERNAL_SERVER_ERROR, 
+              );
         }
     } async signToken(
         id: number,
