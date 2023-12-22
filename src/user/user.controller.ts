@@ -48,4 +48,10 @@ export class UserController {
   delete_me(@GetUser('id') userId: number) {
     return this.userService.delete_me(userId);
   }
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Patch('/changepassword')
+  changePassword(@GetUser('id') userId: number,  @Body('oldPassword') oldPassword: string,
+  @Body('newPassword') newPassword: string,) {
+    return this.userService.changePassword(userId, newPassword, oldPassword);
+  }
 }

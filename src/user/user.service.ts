@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './user.dto';
 import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -49,5 +49,32 @@ export class UserService {
     if (!deleteUser)
       return new HttpException('Not found', HttpStatus.NOT_FOUND);
     return 'account deleted';
+  }
+  async changePassword(userId: number,
+    newPassword: string,
+    oldpassword: string,){
+        try {
+            const user = await this.prisma.user.findUnique({
+                where: {
+                  id: userId,
+                },
+              });
+              if (!user) return new HttpException('Not found', HttpStatus.NOT_FOUND);
+              const pwMatches = await argon.verify(user.password, oldpassword);
+              if (!pwMatches) return new ForbiddenException('Credentials incorrect');
+              const hashNewPassword = await argon.hash(newPassword);
+              const updateUser = await this.prisma.user.update({
+                where: {
+                  email: user.email,
+                },
+                data: {
+                  password: hashNewPassword,
+                },
+              });
+              return { message: `${updateUser.email} password has been updated ` };
+
+        } catch (error) {
+            throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
   }
 }
