@@ -20,9 +20,10 @@ model User{
   email String? @unique
   password String?
   verified Boolean @default(false)
-  wallet Wallet[]
+  wallets Wallet[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) 
+  @@map("users")
 }
 
 model Wallet {
@@ -33,5 +34,5 @@ model Wallet {
   user User? @relation(fields: [user_id], references: [uid])
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) 
-  @@map("accounts")
+  @@map("wallets")
 }

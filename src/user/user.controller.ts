@@ -15,6 +15,7 @@ import { GetUser } from 'src/auth/decorator';
 import { JwtGuard } from 'src/auth/guard';
 import { UpdateUserDto } from './user.dto';
 import { UserService } from './user.service';
+import { WalletService } from 'src/wallet/wallet.service';
 
 @UseGuards(JwtGuard)
 @Controller('user')

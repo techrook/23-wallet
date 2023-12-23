@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService,) {}
   async updateUser(dto: UpdateUserDto, userId: number) {
     if (!userId) return new HttpException('Not found', HttpStatus.NOT_FOUND);
     const user = await this.prisma.user.findUnique({

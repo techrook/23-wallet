@@ -4,10 +4,12 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as argon from 'argon2';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { WalletService } from 'src/wallet/wallet.service';
 @Injectable()
 export class AuthService {
     constructor(private prisma: PrismaService,
         private jwt: JwtService,
+        private walletService:WalletService,
         private config: ConfigService,){
 
     }
@@ -29,11 +31,13 @@ export class AuthService {
                     phone:dto.phone  
                 }
             })
-
+            const user_id = user.id.toString();
             delete user.password;
+            console.log(user_id)
+           const wallet =  await this.walletService.createWallet(user_id)
+           console.log(wallet)
             return user
         } catch (error) {
-          console.log(error)
             throw new HttpException(
                 'Error creating user', 
                 HttpStatus.INTERNAL_SERVER_ERROR, 
