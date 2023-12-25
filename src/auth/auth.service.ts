@@ -35,8 +35,8 @@ export class AuthService {
             delete user.password;
             console.log(user_id)
            const wallet =  await this.walletService.createWallet(user.id)
-           console.log(wallet)
-            return user
+           
+            return{user, wallet} 
         } catch (error) {
             throw new HttpException(
                 'Error creating user', 

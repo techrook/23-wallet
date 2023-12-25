@@ -26,13 +26,14 @@ export class WalletService {
             )
         }
     }
-    async getWallet(user_id:number){
+    async getWallet(walletAddress:string){
         try {
-            const wallet = await this.prisma.wallet.findMany({
-            where: {
-                user_id:user_id
-            }
-        })
+             
+             const wallet = await this.prisma.wallet.findUnique({
+                where:{
+                    uid:walletAddress
+                }
+            })
         if(!wallet) return new HttpException(
             ' wallet not found',
             HttpStatus.NOT_FOUND
@@ -47,7 +48,37 @@ export class WalletService {
         }
         
     };
-    async fundWallet(wallet_id: string){};
+    async fundWallet(walletAddress:string, amount:number){
+        try {
+           
+            const wallet = await this.prisma.wallet.findUnique({
+                where:{
+                    uid:walletAddress
+                }
+            })
+            if(!wallet) return new HttpException(
+                ' wallet not found',
+                HttpStatus.NOT_FOUND
+            )
+                const wallet_id = wallet.id
+                const newBalance = wallet.balance + amount
+            const walletNewBalance= await this.prisma.wallet.update({
+                where:{
+                    id: wallet.id,
+                },
+                data:{
+                    balance: newBalance
+                }
+            })
+
+            return walletNewBalance
+        } catch (error) {
+            return new HttpException(
+                'Error funding  wallet ',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
+    };
     async transferFund(){};
     async withdrawFromWallet(){};
 }

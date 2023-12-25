@@ -19,14 +19,19 @@ import { JwtGuard } from 'src/auth/guard';
 @Controller('wallet')
 export class WalletController {
   constructor(private walletService: WalletService) {}
-
-  @Get("")
-  getWallet(@GetUser('id') userId: number){
-    return this.walletService.getWallet(userId)
+  @HttpCode(HttpStatus.OK)
+  @Get("/:walletaddress")
+  getWallet(@Param('walletaddress') walletaddress: string,){
+    return this.walletService.getWallet(walletaddress)
   }
+  @HttpCode(HttpStatus.CREATED)
   @Post('')
   createWallet(@GetUser('id') userId: number){
     return this.walletService.createWallet(userId)
+  }
+  @Patch('/:walletaddress')
+  fundWallet(@Param('walletaddress') walletaddress: string, @Body('amount') amount: number,){
+    return this.walletService.fundWallet(walletaddress,amount)
   }
 
 }
