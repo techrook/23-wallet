@@ -4,16 +4,16 @@ import { CreateUserDto, LoginUserDto } from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) {}
-    @HttpCode(201)
-    @Post('signup')
-    signUp(@Body() body: CreateUserDto){
-        return this.authService.signup(body)
-    }
+  constructor(private authService: AuthService) {}
+  @HttpCode(201)
+  @Post('signup')
+  signUp(@Body() body: CreateUserDto) {
+    return this.authService.signup(body);
+  }
 
-    @HttpCode(202)
-    @Post('login')
-    login(@Body() body: LoginUserDto){
-        return this.authService.login(body)
-    }
+  @HttpCode(202)
+  @Post('login')
+  login(@Body() body: LoginUserDto) {
+    return this.authService.login(body);
+  }
 }
