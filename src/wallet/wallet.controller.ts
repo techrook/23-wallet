@@ -34,4 +34,9 @@ export class WalletController {
     return this.walletService.fundWallet(walletaddress,amount)
   }
 
+  @Patch('/transfer/:senderWalletAddress')
+  transferFund(@Param('senderWalletAddress') senderWalletAddress: string,@Body('recieverWalletAddress') recieverWalletAddress: string, @Body('amount') amount: number,){
+    return this.walletService.transferFund(senderWalletAddress,recieverWalletAddress,amount)
+  }
+
 }

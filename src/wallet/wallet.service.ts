@@ -64,7 +64,7 @@ export class WalletService {
                 const newBalance = wallet.balance + amount
             const walletNewBalance= await this.prisma.wallet.update({
                 where:{
-                    id: wallet.id,
+                    id: wallet_id,
                 },
                 data:{
                     balance: newBalance
@@ -79,6 +79,71 @@ export class WalletService {
             )
         }
     };
-    async transferFund(){};
+    async transferFund(senderWalletAddress:string, recieverWalletAddress:string, amount:number){
+        try {
+            const senderWallet = await this.prisma.wallet.findUnique({
+            where:{
+                uid:senderWalletAddress
+            }
+        })
+        if(!senderWallet) return new HttpException(
+            'Sender wallet not found',
+            HttpStatus.NOT_FOUND
+        )
+        if(senderWallet.balance < amount) return new HttpException(
+            'Transaction failed , insufficient funds',
+            HttpStatus.INTERNAL_SERVER_ERROR
+        )
+        const senderWallet_id = senderWallet.id
+        const senderNewBalance = senderWallet.balance - amount
+
+        const senderWalletNewBalance= await this.prisma.wallet.update({
+            where:{
+                id: senderWallet_id,
+            },
+            data:{
+                balance: senderNewBalance
+            }
+        })
+        if(!senderWalletNewBalance) return new HttpException(
+            'Error occured during transaction',
+            HttpStatus.INTERNAL_SERVER_ERROR
+        )
+
+        const recieverWallet = await this.prisma.wallet.findUnique({
+            where:{
+                uid:recieverWalletAddress
+            }
+        })
+        if(!recieverWallet) return new HttpException(
+            'reciever wallet not found',
+            HttpStatus.NOT_FOUND
+        )
+
+        const recieverWallet_id = recieverWallet.id
+        const recieverNewBalance = recieverWallet.balance + amount
+
+        const recieverWalletNewBalance= await this.prisma.wallet.update({
+            where:{
+                id: recieverWallet_id,
+            },
+            data:{
+                balance: recieverNewBalance
+            }
+        })
+        if(!recieverWalletNewBalance) return new HttpException(
+            'Error occured during transaction',
+            HttpStatus.INTERNAL_SERVER_ERROR
+        )
+
+        return senderWalletNewBalance
+        } catch (error) {
+            return new HttpException(
+                'Error occured during transaction',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
+        
+    };
     async withdrawFromWallet(){};
 }
