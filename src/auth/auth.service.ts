@@ -34,7 +34,7 @@ export class AuthService {
             const user_id = user.id.toString();
             delete user.password;
             console.log(user_id)
-           const wallet =  await this.walletService.createWallet(user_id)
+           const wallet =  await this.walletService.createWallet(user.id)
            console.log(wallet)
             return user
         } catch (error) {

@@ -29,9 +29,9 @@ model User{
 model Wallet {
   id  Int @id @default(autoincrement())
   uid String @unique @default(uuid())
-  user_id String
+  user_id Int
   balance Int? @default(0)
-  user User? @relation(fields: [user_id], references: [uid])
+  user User? @relation(fields: [user_id], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) 
   @@map("wallets")

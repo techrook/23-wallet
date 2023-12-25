@@ -21,8 +21,12 @@ export class WalletController {
   constructor(private walletService: WalletService) {}
 
   @Get("")
-  getWallet(@GetUser('id') userId: string){
+  getWallet(@GetUser('id') userId: number){
     return this.walletService.getWallet(userId)
   }
-  
+  @Post('')
+  createWallet(@GetUser('id') userId: number){
+    return this.walletService.createWallet(userId)
+  }
+
 }
