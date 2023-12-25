@@ -9,6 +9,18 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+enum CURRENCY {
+  NGN
+  USD
+  EUR
+  GBP
+}
+
+enum STATUS {
+  PENDING
+  FAILED
+  SUCCESSFUL
+}
 
 model User{
   id  Int @id @default(autoincrement())
@@ -21,6 +33,7 @@ model User{
   password String?
   verified Boolean @default(false)
   wallets Wallet[]
+  transactions Transaction[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) 
   @@map("users")
@@ -28,11 +41,29 @@ model User{
 
 model Wallet {
   id  Int @id @default(autoincrement())
-  uid String @unique @default(uuid())
+  wallet_address String? @unique @default(uuid())
   user_id Int
   balance Int? @default(0)
   user User? @relation(fields: [user_id], references: [id])
+  currency CURRENCY @default(NGN)
+  transactions Transaction[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) 
   @@map("wallets")
+}
+
+model Transaction {
+id  Int @id @default(autoincrement())
+uid String @unique @default(uuid())
+user_id Int
+user User @relation(fields: [user_id], references: [id])
+wallet Wallet? @relation(fields: [wallet_id], references: [wallet_address])
+recipient_id String?
+wallet_id String?
+summary String
+status STATUS @default(PENDING)
+amount Int
+createdAt DateTime @default(now())
+updatedAt DateTime @default(now()) 
+@@map("transactions")
 }
