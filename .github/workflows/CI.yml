@@ -29,3 +29,10 @@ jobs:
     - run: yarn install
     - run: yarn build 
     - run: yarn test --passWithNoTests
+    - name: Build and Push Docker Image
+      uses: mr-smithers-excellent/docker-build-push@v6
+      with:
+        image: xxiii/23_wallet
+        registry: docker.io
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
