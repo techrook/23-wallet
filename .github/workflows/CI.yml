@@ -29,6 +29,8 @@ jobs:
     - run: yarn install
     - run: yarn build 
     - run: yarn test --passWithNoTests
+    - name: Copy Dockerfile to Build Context
+        run: cp .github/workflows/CI .
     - name: Build and Push Docker Image
       uses: mr-smithers-excellent/docker-build-push@v6
       with:
