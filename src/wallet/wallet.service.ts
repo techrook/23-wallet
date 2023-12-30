@@ -100,11 +100,12 @@ export class WalletService {
           'Sender wallet not found',
           HttpStatus.NOT_FOUND,
         );
-      if (senderWallet.balance < amount)
+      if ( senderWallet.balance < amount|| amount < 0)
         return new HttpException(
           'Transaction failed , insufficient funds',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
+        
       const senderWallet_id = senderWallet.id;
       const senderNewBalance = senderWallet.balance - amount;
       const sender_id = senderWallet.user_id
@@ -156,8 +157,8 @@ export class WalletService {
           wallet_id: senderWallet_id,
           sender_wallet_address:senderWalletAddress,
           reciever_wallet_address:recieverWalletAddress,
-          // recipient_id: recipient_id,
-          summary: `transfer of  ${amount} to  `,
+          recipient_id: recipient_id,
+          summary: `transfer of  ${amount} to ${recieverWallet.wallet_address} `,
           amount,
           status: "SUCCESSFUL"
         })

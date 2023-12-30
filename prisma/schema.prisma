@@ -58,7 +58,7 @@ uid String @unique @default(uuid())
 user_id Int
 user User @relation(fields: [user_id], references: [id])
 wallet Wallet? @relation(fields: [wallet_id], references: [id])
-recipient_id String?
+recipient_id Int?
 wallet_id Int?
 sender_wallet_address String?
 reciever_wallet_address String? 
