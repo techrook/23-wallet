@@ -5,10 +5,12 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-
+import { TransactionService } from 'src/transaction/transaction.service';
 @Injectable()
 export class WalletService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private transactionService: TransactionService) {}
 
   async createWallet(user_id: number) {
     try {
@@ -66,8 +68,15 @@ export class WalletService {
           balance: newBalance,
         },
       });
+      const user_id = wallet.user_id
+      const transaction = await this.transactionService.createTransaction({
+        user_id,
+        summary: `funded wallet with ${amount}`,
+        amount,
+        status: "SUCCESSFUL"
+      })
 
-      return walletNewBalance;
+      return {walletNewBalance, transaction};
     } catch (error) {
       return new HttpException(
         'Error funding  wallet ',
@@ -98,6 +107,7 @@ export class WalletService {
         );
       const senderWallet_id = senderWallet.id;
       const senderNewBalance = senderWallet.balance - amount;
+      const sender_id = senderWallet.user_id
 
       const senderWalletNewBalance = await this.prisma.wallet.update({
         where: {
@@ -125,6 +135,7 @@ export class WalletService {
         );
 
       const recieverWallet_id = recieverWallet.id;
+      const recipient_id = recieverWallet.user_id
       const recieverNewBalance = recieverWallet.balance + amount;
 
       const recieverWalletNewBalance = await this.prisma.wallet.update({
@@ -140,8 +151,17 @@ export class WalletService {
           'Error occured during transaction',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
-
-      return senderWalletNewBalance;
+        const transaction = await this.transactionService.createTransaction({
+          user_id:sender_id,
+          wallet_id: senderWallet_id,
+          sender_wallet_address:senderWalletAddress,
+          reciever_wallet_address:recieverWalletAddress,
+          // recipient_id: recipient_id,
+          summary: `transfer of  ${amount} to  `,
+          amount,
+          status: "SUCCESSFUL"
+        })
+      return {senderWalletNewBalance, transaction};
     } catch (error) {
       return new HttpException(
         'Error occured during transaction',
