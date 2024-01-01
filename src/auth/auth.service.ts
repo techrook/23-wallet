@@ -10,14 +10,33 @@ import * as argon from 'argon2';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { WalletService } from 'src/wallet/wallet.service';
+import * as nodemailer from 'nodemailer';
 @Injectable()
 export class AuthService {
+  private transporter: nodemailer.Transporter;
   constructor(
     private prisma: PrismaService,
     private jwt: JwtService,
     private walletService: WalletService,
     private config: ConfigService,
-  ) {}
+  ) {
+    this.transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: process.env.YOUR_APP_MAIL,
+        pass: process.env.YOUR_GENERATED_APP_PASSWORD,
+      },
+    });
+
+    this.transporter.verify((err, success) => {
+      if (err) {
+        console.log(err.message);
+      } else {
+        console.log('ready for eletronic messages');
+        console.log(success);
+      }
+    });
+  }
 
   async signup(dto: CreateUserDto) {
     try {
@@ -41,10 +60,17 @@ export class AuthService {
           'Error occured during signup',
           HttpStatus.BAD_REQUEST,
         );
-      const user_id = user.id.toString();
+        const verificationToken = await this.signToken(user.id, user.email);
+      const url = `http://localhost:3333/auth/verify/${user.id}`;
+      this.transporter.sendMail({
+        to: dto.email,
+        subject: 'Verify Account',
+        html: `Click <a href = '${url}'>here</a> to confirm your email.`,
+      });
       delete user.password;
+      const user_id = user.id.toString(); 
       const wallet = await this.walletService.createWallet(user.id);
-      return {user, wallet};
+      return verificationToken;
     } catch (error) {
       throw new HttpException(
         'Error creating user',
