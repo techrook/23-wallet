@@ -32,7 +32,7 @@ export class AuthService {
       if (err) {
         console.log(err.message);
       } else {
-        console.log('ready for eletronic messages');
+        console.log('ready for auth messages');
         console.log(success);
       }
     });

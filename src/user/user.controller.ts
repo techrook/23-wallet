@@ -55,4 +55,19 @@ export class UserController {
   @Body('newPassword') newPassword: string,) {
     return this.userService.changePassword(userId, newPassword, oldPassword);
   }
+  @Post('forgotpassword')
+  forgotPassword(@GetUser('id') userId: number) {
+    return this.userService.forgotPassword(userId);
+  }
+  @Get('/resetpassword/:token')
+  resetPassword(@Param('token') token: string) {
+    return this.userService.resetPassword(token);
+  }
+  @Patch('/updatepassword/:id')
+  updatedResetPassword(
+    @Param('id') id: string,
+    @Body('password') password: string,
+  ) {
+    return this.userService.updatedResetPassword(id, password);
+  }
 }
