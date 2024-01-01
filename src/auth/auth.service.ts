@@ -78,6 +78,34 @@ export class AuthService {
       );
     }
   }
+  async verifyUser(id: string) {
+    // Check we have an id
+    if (!id) throw new HttpException('Bad request ', HttpStatus.BAD_REQUEST);
+    try {
+      const userid = parseInt(id);
+      // Step 2 - Find user with matching ID
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id: userid,
+        },
+      });
+      if (!user) throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      // Step 3 - Update user verification status to true
+      await this.prisma.user.update({
+        where: {
+          id: userid,
+        },
+        data: {
+          verified: true,
+        },
+      });
+      return {
+        message: 'Account Verified',
+      };
+       } catch (err) {
+      throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
   async login(dto: LoginUserDto) {
     try {
       const user = await this.prisma.user.findUnique({
