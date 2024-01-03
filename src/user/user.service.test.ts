@@ -4,6 +4,7 @@ import { UpdateUserDto } from './user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('The UserService', () => {
     let userService :UserService
@@ -35,8 +36,16 @@ describe('The UserService', () => {
             lastname: "test_last_name"
         }
 
-        const resonse = await userService.updateUser(updateuser, userId)
-
-        expect(typeof resonse).toBe('object');
+            const response = await userService.updateUser(updateuser, userId);
+        
+            if (response instanceof HttpException) {
+                expect(response.message).toBe('Error occurred while updating user details');
+                expect(response.getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+              } else {
+                expect(typeof response).toBe('object');
+                expect(response.id).toBeDefined();
+                expect(response.firstname).toBe(updateuser.firstname);
+                expect(response.lastname).toBe(updateuser.lastname);
+              }
       })
 })
