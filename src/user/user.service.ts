@@ -24,7 +24,7 @@ export class UserService {
           console.log(err.message);
         } else {
           console.log('ready for user messages');
-          console.log(success);
+          console.log('success');
         }
       });
     }
