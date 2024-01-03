@@ -9,8 +9,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as argon from 'argon2';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { WalletService } from 'src/wallet/wallet.service';
 import * as nodemailer from 'nodemailer';
+import { WalletService } from '../wallet/wallet.service';
+
 @Injectable()
 export class AuthService {
   private transporter: nodemailer.Transporter;

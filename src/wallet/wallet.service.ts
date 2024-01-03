@@ -1,11 +1,11 @@
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import {
   ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { TransactionService } from 'src/transaction/transaction.service';
+import { TransactionService } from '../transaction/transaction.service';
 @Injectable()
 export class WalletService {
   constructor(
