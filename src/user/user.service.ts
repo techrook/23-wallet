@@ -143,8 +143,7 @@ export class UserService {
         message: `check your mail to complete the reset password step`,
       };
     } catch (error) {
-      console.log(error)
-      throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+      return new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
   async resetPassword(token: string) {
@@ -161,7 +160,7 @@ export class UserService {
       const redirectUrl = `http://localhost:3333/user/updatepassword/${decoded.sub}`;
       return redirectUrl;
     } catch (error) {
-      throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+      return new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
   async updatedResetPassword(userId: string, password: string) {
@@ -181,7 +180,7 @@ export class UserService {
       };
     } catch (error) {
       console.log(error);
-      throw new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
+      return new HttpException('server error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

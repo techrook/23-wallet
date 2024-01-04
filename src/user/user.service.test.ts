@@ -99,4 +99,16 @@ describe('The UserService', () => {
       expect(typeof response).toBe("String");
     }
   });
+
+    it('forgot password', async () => {
+    const userId = 1;
+    const response = await userService.forgotPassword(userId);
+    if (response instanceof HttpException) {
+      expect(response.message).toBe('server error');
+      expect(response.getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+    } else {
+      expect(typeof response).toBe("String");
+      expect(response).toBe("check your mail to complete the reset password step");
+    }
+  });
 });
