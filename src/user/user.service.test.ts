@@ -87,4 +87,16 @@ describe('The UserService', () => {
       expect(response).toBe("account deleted");
     }
   });
+  it('change user password ', async () => {
+    const userId = 1;
+    const newPassword = "asdfghjkl" ;
+    const oldpassword ="pasword" ;
+    const response = await userService.changePassword(userId,newPassword,oldpassword );
+    if (response instanceof HttpException) {
+      expect(response.message).toBe('Credentials incorrect');
+      expect(response.getStatus()).toBe(HttpStatus.FORBIDDEN);
+    } else {
+      expect(typeof response).toBe("String");
+    }
+  });
 });
