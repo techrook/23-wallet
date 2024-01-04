@@ -152,7 +152,6 @@ export class UserService {
       if (!token)
         throw new HttpException('Token Not Fount', HttpStatus.NOT_FOUND);
       const decoded = await this.jwt.verifyAsync(token, { secret: secret });
-      console.log(decoded);
 
       if (!decoded)
         throw new HttpException('Invalid Token', HttpStatus.BAD_REQUEST);
