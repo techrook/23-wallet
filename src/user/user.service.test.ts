@@ -107,8 +107,8 @@ describe('The UserService', () => {
       expect(response.message).toBe('server error');
       expect(response.getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
     } else {
-      expect(typeof response).toBe("String");
-      expect(response).toBe("check your mail to complete the reset password step");
+      expect(typeof response).toBe("object");
+      expect(response.message).toBe("check your mail to complete the reset password step");
     }
   });
 });
